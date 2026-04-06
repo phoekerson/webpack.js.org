@@ -14,7 +14,7 @@ T> Familiarity with [code splitting](/guides/code-splitting/), [caching](/guides
 
 ### Problem
 
-If more than one JavaScript bundle executes `customElements.define()` for the same tag name, the browser throws `DOMException: Failed to execute 'define' on 'CustomElementRegistry'`. That often happens when the module that registers an element is duplicated: separate entry points or async chunks each contain a copy of the registration code, so two bundles both run `define` for the same tag.
+If more than one JavaScript bundle executes `customElements.define()` for the same tag name, the browser throws [`DOMException`](https://developer.mozilla.org/en-US/docs/Web/API/DOMException): `Failed to execute 'define' on 'CustomElementRegistry'`. That often happens when the module that registers an element is duplicated: separate entry points or async chunks each contain a copy of the registration code, so two bundles both run `define` for the same tag.
 
 ### Approach
 
@@ -102,15 +102,27 @@ export default {
 
 **importmap.json** (served alongside your HTML; URLs must match your deployment)
 
+Local vendor file:
+
 ```json
 {
   "imports": {
-    "lodash-es": "/assets/lodash-es.js"
+    "lodash-es": "/vendor/lodash-es.js"
   }
 }
 ```
 
-The key `"lodash-es"` must match both the **`externals` key** and the **specifier** in your source (`import … from "lodash-es"`). The value is the URL the browser loads; webpack does not validate that file.
+CDN (no self-hosting required):
+
+```json
+{
+  "imports": {
+    "lodash-es": "https://cdn.jsdelivr.net/npm/lodash-es@4/+esm"
+  }
+}
+```
+
+The key `"lodash-es"` must match both the **`externals` key** and the **specifier** in your source (`import … from "lodash-es"`). The value is the URL the browser loads — either a local path or a CDN URL; webpack does not validate that file.
 
 **index.html** (order matters: import map before your bundle)
 
