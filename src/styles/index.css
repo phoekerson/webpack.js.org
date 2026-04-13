@@ -1,6 +1,6 @@
 @reference "tailwindcss";
 @import url("https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@400;600&family=Source+Sans+Pro:ital,wght@0,400;0,600;1,400&family=Source+Serif+Pro:wght@600&display=swap");
-@import "./dark.css";
+@import "./theme.css";
 
 * {
   box-sizing: inherit;
@@ -22,6 +22,10 @@ body {
   @apply text-blue-800;
 }
 
+.dark body {
+  @apply bg-dark-bg text-dark-text;
+}
+
 .header-link {
   @apply inline-block w-[22px] h-[22px] bg-no-repeat bg-center bg-contain;
   background-image: url("../assets/link.svg");
@@ -34,19 +38,19 @@ body {
 @layer base {
   a,
   button.as-link {
-    @apply text-[#1a6bac] no-underline;
-    transition: color 250ms;
+    @apply text-brand-link no-underline;
+    @apply transition-colors duration-[250ms];
 
     &.icon-link {
       @apply inline-block text-[0.7em] ml-[16px] -rotate-45 text-[#909090];
 
       &:hover {
-        @apply text-[#1a6bac];
+        @apply text-brand-link;
       }
     }
 
     &:hover {
-      @apply text-[#144f80];
+      @apply text-brand-link-hover;
     }
   }
 
