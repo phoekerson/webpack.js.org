@@ -51,7 +51,10 @@ Webpack will process the CSS and include it in the build output.
 
 ## CSS Modules
 
-Native CSS support also includes CSS Modules. Use the `.module.css` extension:
+Native CSS support also includes CSS Modules. The recommended approach is:
+
+- keep `type: "css/auto"` for mixed CSS handling,
+- use `.module.css` (or `.modules.css`) naming for CSS Modules files.
 
 **src/button.module.css**
 
@@ -209,7 +212,7 @@ That means you can remove:
 
 ### 5) Replace `style-loader` with `exportType: "style"`
 
-If you used `style-loader` for runtime style injection, use CSS module parser `exportType: "style"`:
+If you used `style-loader` for runtime style injection, keep `css/auto` and use module naming (`.module.css` or `.modules.css`), then set `exportType: "style"`:
 
 **webpack.config.js**
 
@@ -222,7 +225,7 @@ export default {
     rules: [
       {
         test: /\.css$/i,
-        type: "css/module",
+        type: "css/auto",
         parser: {
           exportType: "style",
         },
@@ -233,6 +236,8 @@ export default {
 ```
 
 This mode injects a `<style>` element from the webpack runtime and covers the typical `style-loader` use case.
+
+If you cannot rename files to the CSS Modules naming convention, you can use `type: "css/module"` directly for the relevant rule.
 
 ### 6) Keep imports unchanged
 
