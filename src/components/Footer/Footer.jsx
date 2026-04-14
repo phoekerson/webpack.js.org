@@ -40,8 +40,8 @@ const Footer = () => (
         <a href="https://openjsf.org">The OpenJS Foundation</a> |{" "}
         <a href="https://ai-coding-assistants-policy.openjsf.org/">
           AI Coding Assistants Policy
-        </a> |{" "}
-        <a href="https://terms-of-use.openjsf.org">Terms of Use</a> |{" "}
+        </a>{" "}
+        | <a href="https://terms-of-use.openjsf.org">Terms of Use</a> |{" "}
         <a href="https://privacy-policy.openjsf.org">Privacy Policy</a> |{" "}
         <a href="https://bylaws.openjsf.org">Bylaws</a> |{" "}
         <a href="https://code-of-conduct.openjsf.org">Code of Conduct</a> |{" "}
