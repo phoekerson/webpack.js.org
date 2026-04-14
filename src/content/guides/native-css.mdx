@@ -78,6 +78,31 @@ document.body.appendChild(button);
 
 T> CSS Modules class names are exported. By default, named exports are enabled for CSS modules.
 
+You can customize CSS Modules behavior using parser and generator options:
+
+**webpack.config.js**
+
+```js
+export default {
+  experiments: {
+    css: true,
+  },
+  module: {
+    parser: {
+      "css/module": {
+        namedExports: true,
+      },
+    },
+    generator: {
+      "css/module": {
+        exportsConvention: "camel-case-only",
+        localIdentName: "[uniqueName]-[id]-[local]",
+      },
+    },
+  },
+};
+```
+
 ## Production Build
 
 With `experiments.css: true`, webpack provides native CSS extraction and content hashing for CSS assets in production builds.
@@ -101,7 +126,7 @@ Known points to keep in mind:
 
 ## Migration Guide
 
-If you currently use `css-loader` and `mini-css-extract-plugin`, migrate in small steps.
+If you currently use `css-loader`, `mini-css-extract-plugin`, and `style-loader`, migrate in small steps.
 
 ### 1) Start from a classic setup
 
@@ -135,7 +160,81 @@ export default {
 };
 ```
 
-### 3) Keep imports unchanged
+### 3) Migrate `css-loader` options first
+
+Most CSS Modules-related options should move to native parser/generator config.
+
+**webpack.config.js**
+
+```js
+export default {
+  experiments: {
+    css: true,
+  },
+  module: {
+    parser: {
+      css: {
+        import: true,
+        url: true,
+      },
+      "css/module": {
+        namedExports: true,
+      },
+    },
+    generator: {
+      "css/module": {
+        exportsConvention: "camel-case-only",
+        localIdentName: "[uniqueName]-[id]-[local]",
+      },
+    },
+  },
+};
+```
+
+Notes:
+
+- `import` and `url` are native parser switches for CSS handling.
+- `namedExports` controls CSS Modules exports behavior.
+- `exportsConvention` and `localIdentName` provide class export/name shaping.
+- `css-loader` filter-style options are not available as direct equivalents; use webpack mechanisms such as `IgnorePlugin` when needed.
+
+### 4) Replace `mini-css-extract-plugin`
+
+When `experiments.css` is enabled, webpack provides native CSS extraction and content hash handling for CSS output files.
+
+That means you can remove:
+
+- `MiniCssExtractPlugin.loader` from `module.rules`,
+- the `new MiniCssExtractPlugin()` plugin instance.
+
+### 5) Replace `style-loader` with `exportType: "style"`
+
+If you used `style-loader` for runtime style injection, use CSS module parser `exportType: "style"`:
+
+**webpack.config.js**
+
+```js
+export default {
+  experiments: {
+    css: true,
+  },
+  module: {
+    rules: [
+      {
+        test: /\.css$/i,
+        type: "css/module",
+        parser: {
+          exportType: "style",
+        },
+      },
+    ],
+  },
+};
+```
+
+This mode injects a `<style>` element from the webpack runtime and covers the typical `style-loader` use case.
+
+### 6) Keep imports unchanged
 
 Your JS imports can stay the same:
 
@@ -144,7 +243,7 @@ import "./styles.css";
 import * as styles from "./button.module.css";
 ```
 
-### 4) Validate output in development and production
+### 7) Validate output in development and production
 
 Check that:
 
