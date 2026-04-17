@@ -187,7 +187,7 @@ export default {
     generator: {
       "css/module": {
         exportsConvention: "camel-case-only",
-        localIdentName: "[uniqueName]-[id]-[local]",
+        localIdentName: "[local]-[hash:base64:6]",
       },
     },
   },
@@ -199,13 +199,36 @@ Notes:
 - `import` and `url` are native parser switches for CSS handling.
 - `namedExports` controls CSS Modules exports behavior.
 - `exportsConvention` and `localIdentName` provide class export/name shaping.
+- `localIdentName` supports hash placeholders (for example `[hash:base64:6]`); you can tune hashing globally with [`output.hashFunction`](/configuration/output/#outputhashfunction), [`output.hashDigest`](/configuration/output/#outputhashdigest), [`output.hashDigestLength`](/configuration/output/#outputhashdigestlength), and [`output.hashSalt`](/configuration/output/#outputhashsalt).
 - `css-loader` filter-style options are not available as direct equivalents; use webpack mechanisms such as `IgnorePlugin` when needed.
 
 ### 4) Replace `mini-css-extract-plugin`
 
 When `experiments.css` is enabled, webpack provides native CSS extraction and content hash handling for CSS output files.
 
-That means you can remove:
+**webpack.config.js**
+
+```diff
+-import MiniCssExtractPlugin from "mini-css-extract-plugin";
+-
+ export default {
++  experiments: {
++    css: true,
++  },
+   module: {
+     rules: [
+       {
+         test: /\.css$/i,
+-        use: [MiniCssExtractPlugin.loader, "css-loader"],
++        use: ["css-loader"],
+       },
+     ],
+   },
+-  plugins: [new MiniCssExtractPlugin()],
+ };
+```
+
+You can remove:
 
 - `MiniCssExtractPlugin.loader` from `module.rules`,
 - the `new MiniCssExtractPlugin()` plugin instance.
