@@ -204,7 +204,7 @@ Notes:
 
 ### 4) Replace `mini-css-extract-plugin`
 
-When `experiments.css` is enabled, webpack provides native CSS extraction and content hash handling for CSS output files.
+When `experiments.css` is enabled, webpack provides native CSS extraction and content hash handling for CSS output files, so you can drop both `mini-css-extract-plugin` and `css-loader` from this basic setup.
 
 **webpack.config.js**
 
@@ -215,22 +215,13 @@ When `experiments.css` is enabled, webpack provides native CSS extraction and co
 +  experiments: {
 +    css: true,
 +  },
-   module: {
-     rules: [
-       {
-         test: /\.css$/i,
--        use: [MiniCssExtractPlugin.loader, "css-loader"],
-+        use: ["css-loader"],
-       },
-     ],
-   },
 -  plugins: [new MiniCssExtractPlugin()],
  };
 ```
 
 You can remove:
 
-- `MiniCssExtractPlugin.loader` from `module.rules`,
+- the CSS loader chain (including `css-loader`) from `module.rules`,
 - the `new MiniCssExtractPlugin()` plugin instance.
 
 ### 5) Replace `style-loader` with `exportType: "style"`
